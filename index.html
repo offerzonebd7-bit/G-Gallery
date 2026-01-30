@@ -17,59 +17,47 @@
             fontFamily: {
               sans: ['Inter', 'Hind Siliguri', 'sans-serif'],
               serif: ['Bodoni Moda', 'serif'],
+            },
+            colors: {
+              chocolate: '#2D1B13',
+              offwhite: '#FAF9F6',
+              gold: '#C5A059',
+              copper: '#A67C52'
             }
           }
         }
       }
     </script>
     <style>
-      :root { --brand-gold: #c5a059; }
       body {
+        background-color: #FAF9F6;
+        color: #2D1B13;
         -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
         user-select: none;
-        transition: background-color 0.5s ease;
+        scroll-behavior: smooth;
       }
-      .no-screenshot {
-        pointer-events: none;
-        -webkit-touch-callout: none;
+      .dark body {
+        background-color: #2D1B13;
+        color: #FAF9F6;
       }
-      @media print {
-        body { display: none; }
-      }
-      #root:empty::after {
-        content: ""; position: fixed; top: 50%; left: 50%; width: 40px; height: 1px;
-        background: #c5a059; animation: loading 1.5s infinite; transform: translate(-50%, -50%);
-      }
-      @keyframes loading {
-        0% { transform: translate(-50%, -50%) scaleX(0); }
-        100% { transform: translate(-50%, -50%) scaleX(1); opacity: 0; }
-      }
+      * { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+      @media print { body { display: none !important; } }
+      ::-webkit-scrollbar { width: 4px; }
+      ::-webkit-scrollbar-thumb { background: #C5A059; border-radius: 10px; }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.4",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.38.0"
-  }
-}
-</script>
-</head>
-  <body class="bg-white dark:bg-[#0a0a0a] text-black dark:text-white">
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@^19.2.4",
+        "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+        "react/": "https://esm.sh/react@^19.2.4/",
+        "@google/genai": "https://esm.sh/@google/genai@^1.38.0"
+      }
+    }
+    </script>
+  </head>
+  <body class="antialiased">
     <div id="root"></div>
     <script type="module" src="./index.tsx"></script>
-    <script>
-      // Anti-Screenshot Logic
-      document.addEventListener('contextmenu', e => e.preventDefault());
-      document.addEventListener('keydown', e => {
-        if (e.ctrlKey && (e.key === 'p' || e.key === 's' || e.key === 'u')) {
-          e.preventDefault();
-          alert('Privacy Protection Active.');
-        }
-      });
-    </script>
   </body>
 </html>
