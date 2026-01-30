@@ -3,7 +3,14 @@ import { GoogleGenAI } from "@google/genai";
 
 export const generateAestheticDescription = async (name: string, category: string): Promise<string> => {
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const apiKey = typeof process !== 'undefined' ? process.env?.API_KEY : '';
+    
+    if (!apiKey) {
+      console.warn("API KEY not found, using placeholder.");
+      return "A sophisticated expression of minimalist design for your digital sanctuary.";
+    }
+
+    const ai = new GoogleGenAI({ apiKey });
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: `Generate a short, elegant, and poetic one-sentence description for a premium mobile wallpaper named "${name}" from the "${category}" collection. Focus on sophistication and minimalist art vibes.`,
