@@ -1,41 +1,48 @@
 
 import React, { useEffect, useState } from 'react';
-import { Wallpaper } from '../types';
+import { Wallpaper, Language, translations } from '../types';
 
 interface WallpaperModalProps {
   wallpaper: Wallpaper;
   onClose: () => void;
+  lang: Language;
 }
 
-const WallpaperModal: React.FC<WallpaperModalProps> = ({ wallpaper, onClose }) => {
+const WallpaperModal: React.FC<WallpaperModalProps> = ({ wallpaper, onClose, lang }) => {
+  const t = translations[lang];
   const [timeLeft, setTimeLeft] = useState<string>('');
   const [isAnimating, setIsAnimating] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
+
+  const paymentNumber = '01930277399';
 
   useEffect(() => {
     setIsAnimating(true);
     if (!wallpaper.limitedFreeUntil) return;
-
     const timer = setInterval(() => {
       const now = Date.now();
       const diff = wallpaper.limitedFreeUntil! - now;
-      if (diff <= 0) {
-        setTimeLeft('EXPIRED');
-        clearInterval(timer);
-      } else {
-        const hours = Math.floor(diff / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        setTimeLeft(`${hours.toString().padStart(2, '0')} : ${minutes.toString().padStart(2, '0')} : ${seconds.toString().padStart(2, '0')}`);
+      if (diff <= 0) { setTimeLeft('00:00:00'); clearInterval(timer); }
+      else {
+        const h = Math.floor(diff / (1000 * 60 * 60)).toString().padStart(2, '0');
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+        const s = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
+        setTimeLeft(`${h}:${m}:${s}`);
       }
     }, 1000);
-
     return () => clearInterval(timer);
   }, [wallpaper.limitedFreeUntil]);
 
-  const handleWhatsAppOrder = () => {
-    const phone = '8801930277399';
-    const message = encodeURIComponent(`Hello Graphico Global, I want to purchase the "${wallpaper.name}" wallpaper from the "${wallpaper.category}" collection.`);
-    window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+  const handleCopy = () => {
+    navigator.clipboard.writeText(paymentNumber);
+    setCopySuccess(true);
+    setTimeout(() => setCopySuccess(false), 2000);
+  };
+
+  const handleWhatsAppOrder = (method: string) => {
+    const finalNumber = method === 'Rocket' ? paymentNumber + '4' : paymentNumber;
+    const msg = encodeURIComponent(`অর্ডার: ${wallpaper.name}\nপেমেন্ট মেথড: ${method}\nডিজাইন আইডি: ${wallpaper.id}\nপেমেন্ট নম্বর: ${finalNumber}`);
+    window.open(`https://wa.me/8801930277399?text=${msg}`, '_blank');
   };
 
   const handleDownload = async () => {
@@ -45,107 +52,106 @@ const WallpaperModal: React.FC<WallpaperModalProps> = ({ wallpaper, onClose }) =
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `${wallpaper.name.replace(/\s+/g, '_')}_GraphicoGlobal.jpg`;
+      link.download = `${wallpaper.name}_Graphico.jpg`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      // Fallback for cross-origin images
-      window.open(wallpaper.imageUrl, '_blank');
-    }
+    } catch { window.open(wallpaper.imageUrl, '_blank'); }
   };
 
-  const isActuallyFree = !wallpaper.isPremium || (wallpaper.limitedFreeUntil && Date.now() < wallpaper.limitedFreeUntil);
+  const isFree = !wallpaper.isPremium || (wallpaper.limitedFreeUntil && Date.now() < wallpaper.limitedFreeUntil);
+
+  const paymentMethods = [
+    { name: 'bKash', color: 'bg-[#e2136e]', icon: 'https://img.icons8.com/color/48/000000/bkash.png' },
+    { name: 'Nagad', color: 'bg-[#f7941d]', icon: 'https://img.icons8.com/color/48/000000/nagad.png' },
+    { name: 'Rocket', color: 'bg-[#8c3494]', icon: 'https://img.icons8.com/color/48/000000/rocket.png' },
+    { name: 'Tap', color: 'bg-[#00a651]', icon: 'https://img.icons8.com/color/48/000000/tap.png' },
+    { name: 'Upay', color: 'bg-[#005ea1]', icon: 'https://img.icons8.com/color/48/000000/upay.png' },
+    { name: 'mCash', color: 'bg-[#1b75bc]', icon: 'https://img.icons8.com/color/48/000000/mcash.png' },
+  ];
 
   return (
-    <div className={`fixed inset-0 z-[100] flex items-center justify-center bg-white transition-opacity duration-1000 overflow-y-auto ${isAnimating ? 'opacity-100' : 'opacity-0'}`}>
-      <button 
-        onClick={onClose}
-        className="fixed top-10 right-10 text-neutral-300 hover:text-black transition-colors z-[110] group"
-      >
-        <span className="text-[10px] uppercase tracking-[0.4em] mr-4 opacity-0 group-hover:opacity-100 transition-opacity">Close</span>
-        <svg className="w-8 h-8 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M6 18L18 6M6 6l12 12" />
-        </svg>
+    <div className={`fixed inset-0 z-[100] flex items-center justify-center bg-white dark:bg-[#050505] transition-opacity duration-700 overflow-y-auto ${isAnimating ? 'opacity-100' : 'opacity-0'}`}>
+      <button onClick={onClose} className="fixed top-8 right-8 text-neutral-400 hover:text-black dark:hover:text-white z-[110]">
+        <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" /></svg>
       </button>
 
-      <div className="max-w-7xl w-full px-8 py-20 lg:py-0">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+      <div className="max-w-6xl w-full px-6 py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           
-          <div className="lg:col-span-6 xl:col-span-5 flex justify-center">
-            <div className="relative group rounded-none overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] max-w-[400px] w-full bg-neutral-50 animate-fadeIn">
-              <img 
-                src={wallpaper.imageUrl} 
-                alt={wallpaper.name}
-                className="w-full h-auto object-cover"
-              />
+          <div className="flex justify-center sticky top-24">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl border-8 border-neutral-50 dark:border-neutral-900 max-w-[380px] w-full bg-neutral-100 dark:bg-neutral-800">
+              <img src={wallpaper.imageUrl} alt={wallpaper.name} className="w-full h-auto" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
             </div>
           </div>
 
-          <div className="lg:col-span-6 xl:col-span-7 flex flex-col space-y-10">
+          <div className="space-y-8">
             <div>
-              <span className="text-[11px] uppercase tracking-[0.5em] text-[#c5a059] font-bold block mb-4">{wallpaper.category}</span>
-              <h2 className="font-serif text-5xl md:text-7xl text-neutral-900 leading-none mb-6 italic">
+              <span className="text-xs uppercase tracking-[0.4em] text-[#c5a059] font-bold block mb-2">{wallpaper.category}</span>
+              <h2 className="font-serif text-5xl md:text-6xl text-neutral-900 dark:text-white leading-tight italic">
                 {wallpaper.name}
               </h2>
-              <p className="text-neutral-500 text-lg font-light italic border-l-2 border-neutral-100 pl-6 max-w-lg">
+              <p className="text-neutral-500 dark:text-neutral-400 mt-6 text-lg font-light leading-relaxed italic border-l-4 border-[#c5a059]/30 pl-6">
                 "{wallpaper.description}"
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-8 items-end">
+            <div className="flex items-center gap-8 py-6 border-y border-neutral-100 dark:border-neutral-900">
               <div>
-                <p className="text-[9px] uppercase tracking-[0.3em] text-neutral-400 mb-1">Status</p>
-                <span className="text-3xl font-serif text-neutral-900 italic">
-                  {isActuallyFree ? 'FREE' : `$${wallpaper.price.toFixed(2)}`}
+                <p className="text-[10px] uppercase tracking-widest text-neutral-400 mb-1">{t.price}</p>
+                <span className="text-4xl font-serif text-neutral-900 dark:text-white italic">
+                  {isFree ? t.free : `৳ ${Math.round(wallpaper.price * 115)}`}
                 </span>
               </div>
-
-              {wallpaper.limitedFreeUntil && timeLeft !== 'EXPIRED' && (
-                <div className="bg-amber-50 px-4 py-2 border-l-2 border-amber-400">
-                  <p className="text-[8px] uppercase tracking-[0.2em] text-amber-700 font-bold mb-1">Offer Ends In</p>
-                  <p className="text-xl font-serif tabular-nums">{timeLeft}</p>
+              {wallpaper.limitedFreeUntil && Date.now() < wallpaper.limitedFreeUntil && (
+                <div className="bg-[#c5a059]/10 px-4 py-2 rounded-xl">
+                  <p className="text-[9px] uppercase tracking-tighter text-[#c5a059] font-bold mb-1">{t.limitedOffer}</p>
+                  <p className="text-xl font-bold tabular-nums text-[#c5a059]">{timeLeft}</p>
                 </div>
               )}
             </div>
 
-            <div className="pt-6">
-              {isActuallyFree ? (
-                <button 
-                  onClick={handleDownload}
-                  className="w-full sm:w-auto bg-black text-white px-12 py-5 text-[11px] uppercase tracking-[0.4em] font-bold hover:bg-[#c5a059] transition-all duration-500 shadow-xl flex items-center justify-center gap-4"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                  Download Wallpaper
-                </button>
-              ) : (
-                <button 
-                  onClick={handleWhatsAppOrder}
-                  className="w-full sm:w-auto bg-[#25D366] text-white px-12 py-5 text-[11px] uppercase tracking-[0.4em] font-bold hover:bg-black transition-all duration-500 shadow-xl flex items-center justify-center gap-4"
-                >
-                  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.27 9.27 0 01-4.487-1.159l-.323-.192-3.33.874.89-3.246-.211-.336a9.283 9.283 0 01-1.424-4.947c0-5.112 4.158-9.27 9.27-9.27 2.475 0 4.803.965 6.556 2.719a9.232 9.232 0 012.714 6.557c0 5.114-4.158 9.27-9.271 9.27m7.952-17.224a10.939 10.939 0 00-7.952-3.297c-6.044 0-10.962 4.918-10.962 10.962 0 1.93.499 3.817 1.448 5.483L2 22l5.636-1.479a10.927 10.927 0 00-5.32 1.373c6.042 0 10.96-4.919 10.96-10.962 0-2.92-1.139-5.666-3.21-7.734z"/></svg>
-                  Order via WhatsApp
-                </button>
-              )}
-            </div>
-            
-            <p className="text-[10px] text-neutral-400 uppercase tracking-[0.2em]">
-              {isActuallyFree ? "Fast direct download to your phone gallery." : "Payment via bKash/Nagad available."}
-            </p>
+            {isFree ? (
+              <button onClick={handleDownload} className="w-full bg-black dark:bg-white dark:text-black text-white py-6 rounded-2xl text-xs uppercase tracking-[0.4em] font-bold shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-4">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                {t.download}
+              </button>
+            ) : (
+              <div className="space-y-6">
+                <div className="bg-neutral-50 dark:bg-neutral-900 p-8 rounded-3xl border border-neutral-100 dark:border-neutral-800">
+                  <h4 className="text-lg font-bold mb-2 flex items-center gap-2">
+                    <span className="w-2 h-2 bg-[#c5a059] rounded-full"></span> {t.payHeader}
+                  </h4>
+                  <p className="text-xs text-neutral-500 mb-6">{t.paySub}</p>
+                  
+                  <div className="flex items-center justify-between bg-white dark:bg-black p-4 rounded-2xl border border-neutral-100 dark:border-neutral-800 mb-8 group">
+                    <span className="text-xl font-bold tracking-widest">{paymentNumber}</span>
+                    <button onClick={handleCopy} className="text-[10px] uppercase font-bold text-[#c5a059] px-4 py-2 bg-[#c5a059]/10 rounded-lg hover:bg-[#c5a059] hover:text-white transition-all">
+                      {copySuccess ? t.copied : t.copy}
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    {paymentMethods.map(m => (
+                      <button 
+                        key={m.name} 
+                        onClick={() => handleWhatsAppOrder(m.name)}
+                        className={`flex flex-col items-center justify-center p-4 rounded-2xl border-2 border-transparent hover:border-black dark:hover:border-white bg-white dark:bg-black transition-all group overflow-hidden relative`}
+                      >
+                        <span className="text-[10px] font-bold uppercase tracking-widest mb-1">{m.name}</span>
+                        <div className={`w-full h-1 absolute bottom-0 ${m.color}`} />
+                        {m.name === 'Rocket' && <span className="text-[8px] text-[#c5a059] mt-1 font-bold italic">+4 Extra</span>}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <p className="text-center text-[10px] uppercase tracking-widest text-[#c5a059] font-bold animate-pulse">{t.whatsappConfirm}</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
-
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-      `}</style>
     </div>
   );
 };
