@@ -12,48 +12,45 @@
     <style>
       :root {
         --brand-gold: #c5a059;
-        --bg-primary: #ffffff;
+        --bg-primary: #fcfcfc;
       }
       body {
         font-family: 'Inter', sans-serif;
         background-color: var(--bg-primary);
         color: #1a1a1a;
         -webkit-font-smoothing: antialiased;
-        overflow-x: hidden;
       }
       .font-serif {
         font-family: 'Bodoni Moda', serif;
       }
-      /* Custom cursor and premium effects */
-      .premium-gradient-text {
-        background: linear-gradient(to right, #1a1a1a, #c5a059);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+      /* Premium Minimalist Scrollbar */
+      ::-webkit-scrollbar { width: 4px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: #e5e5e5; border-radius: 10px; }
+      ::-webkit-scrollbar-thumb:hover { background: #c5a059; }
+
+      /* Visual Polish */
+      .editorial-shadow {
+        shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.08);
       }
-      .glass-blur {
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-      }
-      /* Smooth scrolling */
-      html {
-        scroll-behavior: smooth;
-      }
-      /* Loading animation shim */
+      
+      /* Essential for the loading state to vanish once React mounts */
       #root:empty::after {
         content: "";
         position: fixed;
         top: 50%;
         left: 50%;
-        width: 40px;
+        width: 60px;
         height: 1px;
         background: #c5a059;
-        animation: loading 1.5s infinite ease-in-out;
+        transform: translate(-50%, -50%);
+        animation: premium-load 1.8s infinite cubic-bezier(0.65, 0, 0.35, 1);
       }
-      @keyframes loading {
-        0% { transform: scaleX(0); transform-origin: left; }
-        50% { transform: scaleX(1); transform-origin: left; }
-        51% { transform: scaleX(1); transform-origin: right; }
-        100% { transform: scaleX(0); transform-origin: right; }
+      @keyframes premium-load {
+        0% { transform: translate(-50%, -50%) scaleX(0); transform-origin: left; }
+        50% { transform: translate(-50%, -50%) scaleX(1); transform-origin: left; }
+        51% { transform: translate(-50%, -50%) scaleX(1); transform-origin: right; }
+        100% { transform: translate(-50%, -50%) scaleX(0); transform-origin: right; }
       }
     </style>
     <script type="importmap">
@@ -68,12 +65,11 @@
   }
 }
 </script>
-    <script>
-      // Global process shim to prevent crashes in no-build environments
-      window.process = { env: { API_KEY: "" } };
-    </script>
+    <script>window.process = { env: { API_KEY: "" } };</script>
   </head>
   <body>
     <div id="root"></div>
+    <!-- CRITICAL: This script tag was missing, which caused the white screen -->
+    <script type="module" src="./index.tsx"></script>
   </body>
 </html>

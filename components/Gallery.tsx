@@ -29,45 +29,45 @@ const Gallery: React.FC<GalleryProps> = ({ wallpapers }) => {
   }, [wallpapers, filter, selectedCategory, search]);
 
   return (
-    <div className="max-w-[1600px] mx-auto px-6 sm:px-12 py-16">
-      <header className="mb-20 text-center relative">
-        <div className="inline-block mb-6 relative">
-          <span className="text-[10px] uppercase tracking-[0.6em] text-[#c5a059] font-semibold">Exquisite Wallpapers</span>
-          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-[1px] bg-[#c5a059]/30" />
-        </div>
-        <h2 className="font-serif text-5xl md:text-7xl lg:text-8xl mb-8 text-neutral-900 tracking-tighter leading-none italic">
-          The <span className="font-light not-italic">Art</span> Collection
+    <div className="max-w-[1700px] mx-auto px-6 md:px-16 py-24">
+      <div className="mb-32 max-w-4xl">
+        <span className="text-[11px] uppercase tracking-[0.6em] text-[#c5a059] font-bold block mb-6 animate-pulse">Est. 2025</span>
+        <h2 className="font-serif text-6xl md:text-8xl lg:text-[120px] mb-12 text-neutral-900 tracking-tighter leading-[0.85] italic">
+          Digital <span className="font-light not-italic text-neutral-200">Elegance</span>
         </h2>
-        <p className="text-neutral-400 max-w-xl mx-auto text-sm leading-relaxed font-light tracking-wide">
-          A digital sanctuary of minimalist aesthetics, Islamic-inspired Sabr series, and curated floral elegance for the modern individual.
-        </p>
-      </header>
+        <div className="flex items-center gap-12">
+           <div className="h-[1px] w-24 bg-neutral-100" />
+           <p className="text-neutral-400 text-sm md:text-base leading-relaxed font-light tracking-wide max-w-md">
+            A curated sanctuary of artisanal mobile canvases. From the spiritual patience of the Sabr series to high-fashion minimalist abstractions.
+          </p>
+        </div>
+      </div>
 
-      {/* Advanced Filters */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-20 border-y border-neutral-100 py-10">
-        <div className="flex flex-wrap gap-10">
+      {/* Modern Refined Navigation */}
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-12 mb-24 border-b border-neutral-50 pb-12">
+        <div className="flex flex-wrap gap-12">
           {(['ALL', 'PREMIUM', 'FREE'] as const).map(f => (
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`text-[10px] tracking-[0.4em] uppercase transition-all duration-500 relative group py-2 ${
-                filter === f ? 'text-black font-bold' : 'text-neutral-300 hover:text-black'
+              className={`text-[11px] tracking-[0.5em] uppercase transition-all duration-700 relative py-2 ${
+                filter === f ? 'text-black font-bold' : 'text-neutral-200 hover:text-black'
               }`}
             >
               {f}
-              <span className={`absolute bottom-0 left-0 w-full h-[1px] bg-black transition-transform duration-500 origin-left ${filter === f ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`} />
+              <span className={`absolute bottom-0 left-0 w-full h-[1px] bg-black transition-transform duration-700 ${filter === f ? 'scale-x-100' : 'scale-x-0'}`} />
             </button>
           ))}
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-8 items-center">
-          <div className="relative min-w-[200px]">
+        <div className="flex flex-col sm:flex-row gap-12 items-center w-full lg:w-auto">
+          <div className="relative group w-full sm:w-64">
              <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value as any)}
-              className="w-full bg-transparent border-none py-2 text-[10px] uppercase tracking-[0.3em] font-medium focus:ring-0 cursor-pointer appearance-none text-neutral-600 hover:text-black transition-colors"
+              className="w-full bg-transparent border-none py-3 text-[10px] uppercase tracking-[0.4em] font-semibold focus:ring-0 cursor-pointer appearance-none text-neutral-400 hover:text-black transition-colors"
             >
-              <option value="ALL">Collections</option>
+              <option value="ALL">All Curations</option>
               {Object.values(Category).map(cat => (
                 <option key={cat} value={cat}>{cat}</option>
               ))}
@@ -75,24 +75,22 @@ const Gallery: React.FC<GalleryProps> = ({ wallpapers }) => {
             <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none opacity-20">
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
             </div>
-            <div className="absolute bottom-0 left-0 w-full h-[1px] bg-neutral-100" />
           </div>
           
-          <div className="relative group min-w-[240px]">
+          <div className="relative group w-full sm:w-72">
             <input 
               type="text" 
-              placeholder="Filter by name..."
+              placeholder="Search by title..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full border-none border-b border-neutral-100 focus:ring-0 py-2 px-1 text-[11px] uppercase tracking-[0.2em] focus:outline-none bg-transparent placeholder-neutral-200"
+              className="w-full border-none border-b border-neutral-100 focus:border-black focus:ring-0 py-3 text-[11px] uppercase tracking-[0.3em] focus:outline-none bg-transparent placeholder-neutral-200"
             />
-            <div className="absolute bottom-0 left-0 w-full h-[1px] bg-neutral-100 group-focus-within:bg-black transition-colors" />
           </div>
         </div>
       </div>
 
-      {/* Grid - High Fashion Layout */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-10 gap-y-20">
+      {/* Grid Layout */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-12 gap-y-24">
         {filteredWallpapers.map((w, idx) => {
           const now = Date.now();
           const isLimitedFree = w.limitedFreeUntil && now < w.limitedFreeUntil;
@@ -101,50 +99,49 @@ const Gallery: React.FC<GalleryProps> = ({ wallpapers }) => {
           return (
             <div 
               key={w.id} 
-              className={`group cursor-pointer transition-all duration-700 ${idx % 2 !== 0 ? 'lg:mt-12' : ''}`}
+              className={`group cursor-pointer transition-all duration-1000 ${idx % 2 !== 0 ? 'lg:mt-20' : ''}`}
               onClick={() => setSelectedWallpaper(w)}
             >
-              <div className="relative aspect-[3/4] mb-8 overflow-hidden bg-neutral-50">
+              <div className="relative aspect-[4/5] mb-10 overflow-hidden bg-[#f7f7f7] editorial-shadow">
                 <img 
                   src={w.imageUrl} 
                   alt={w.name}
-                  className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
+                  className="w-full h-full object-cover grayscale-[0.4] group-hover:grayscale-0 transition-all duration-[2000ms] group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-500" />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-1000" />
                 
                 {/* Visual Indicators */}
-                <div className="absolute top-6 left-6 flex flex-col gap-3">
+                <div className="absolute top-8 left-8 flex flex-col gap-4">
                   {isLimitedFree && (
-                    <div className="bg-white/90 backdrop-blur-md px-3 py-1 text-[9px] uppercase font-bold tracking-[0.2em] shadow-sm flex items-center gap-2">
-                      <span className="w-1 h-1 rounded-full bg-amber-500 animate-pulse" />
-                      Limited Free
+                    <div className="bg-white px-4 py-2 text-[9px] uppercase font-bold tracking-[0.3em] shadow-xl animate-bounce">
+                      Free Now
                     </div>
                   )}
                   {w.isPremium && !isLimitedFree && (
-                    <div className="bg-black/80 text-white px-3 py-1 text-[9px] uppercase font-bold tracking-[0.2em]">
+                    <div className="bg-black text-white px-4 py-2 text-[9px] uppercase font-bold tracking-[0.3em] shadow-xl">
                       Premium
                     </div>
                   )}
                 </div>
 
-                <div className="absolute bottom-0 left-0 w-full p-8 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 flex justify-center">
-                   <div className="bg-white px-6 py-3 text-[10px] uppercase tracking-[0.3em] font-semibold shadow-xl">
-                      View details
+                <div className="absolute bottom-0 left-0 w-full p-10 translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700">
+                   <div className="h-12 w-12 bg-white rounded-full flex items-center justify-center shadow-2xl">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 4v16m8-8H4" /></svg>
                    </div>
                 </div>
               </div>
 
-              <div className="space-y-3 px-2">
+              <div className="space-y-4 px-2">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="font-serif text-2xl text-neutral-900 group-hover:text-[#c5a059] transition-colors duration-500 italic lowercase tracking-tight">
+                    <h3 className="font-serif text-3xl text-neutral-900 group-hover:text-[#c5a059] transition-colors duration-700 italic font-light lowercase">
                       {w.name}
                     </h3>
-                    <p className="text-[10px] text-neutral-400 uppercase tracking-[0.2em] font-light mt-1">{w.category}</p>
+                    <p className="text-[10px] text-neutral-300 uppercase tracking-[0.4em] font-medium mt-2">{w.category}</p>
                   </div>
                   <div className="text-right">
-                    <p className={`text-sm font-light tracking-widest ${isFree ? 'text-[#c5a059]' : 'text-neutral-900'}`}>
-                      {isFree ? 'FREE' : `$${w.price.toFixed(2)}`}
+                    <p className={`text-xs font-medium tracking-[0.2em] ${isFree ? 'text-[#c5a059]' : 'text-neutral-900'}`}>
+                      {isFree ? 'COMPLIMENTARY' : `$${w.price.toFixed(2)}`}
                     </p>
                   </div>
                 </div>
@@ -155,8 +152,8 @@ const Gallery: React.FC<GalleryProps> = ({ wallpapers }) => {
       </div>
 
       {filteredWallpapers.length === 0 && (
-        <div className="py-40 text-center border border-dashed border-neutral-100">
-          <p className="text-neutral-300 font-serif text-3xl italic">no designs found in this realm.</p>
+        <div className="py-60 text-center">
+          <p className="text-neutral-200 font-serif text-4xl italic font-light tracking-tighter">no artistic remains found.</p>
         </div>
       )}
 

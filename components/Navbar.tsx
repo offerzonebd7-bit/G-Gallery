@@ -11,43 +11,44 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ currentView, setView, isAdmin, logout }) => {
   return (
-    <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+    <nav className="sticky top-0 z-50 bg-white/60 backdrop-blur-xl border-b border-neutral-50/50">
+      <div className="max-w-[1800px] mx-auto px-6 md:px-12">
+        <div className="flex justify-between items-center h-24">
           <div 
-            className="flex-shrink-0 cursor-pointer"
+            className="flex-shrink-0 cursor-pointer group"
             onClick={() => setView('GALLERY')}
           >
-            <h1 className="font-serif text-2xl tracking-tight font-bold text-gray-900">
-              GRAPHICO <span className="font-light text-gray-500">GLOBAL</span>
+            <h1 className="font-serif text-2xl md:text-3xl tracking-tighter font-bold text-neutral-900 group-hover:italic transition-all duration-700">
+              GRAPHICO <span className="font-light text-neutral-300">GLOBAL</span>
             </h1>
           </div>
 
-          <div className="flex items-center space-x-8">
+          <div className="flex items-center space-x-12">
             <button 
               onClick={() => setView('GALLERY')}
-              className={`text-sm tracking-widest uppercase transition-colors ${
-                currentView === 'GALLERY' ? 'text-black font-semibold' : 'text-gray-400 hover:text-black'
+              className={`text-[10px] tracking-[0.4em] uppercase transition-all duration-500 relative ${
+                currentView === 'GALLERY' ? 'text-black font-bold' : 'text-neutral-300 hover:text-black'
               }`}
             >
               Gallery
+              {currentView === 'GALLERY' && <span className="absolute -bottom-1 left-0 w-full h-[1px] bg-[#c5a059]" />}
             </button>
             
             {!isAdmin ? (
               <button 
                 onClick={() => setView('LOGIN')}
-                className={`text-sm tracking-widest uppercase transition-colors ${
-                  currentView === 'LOGIN' ? 'text-black font-semibold' : 'text-gray-400 hover:text-black'
+                className={`text-[10px] tracking-[0.4em] uppercase transition-all duration-500 border border-neutral-100 px-6 py-3 hover:bg-black hover:text-white ${
+                  currentView === 'LOGIN' ? 'bg-black text-white' : 'text-neutral-400'
                 }`}
               >
-                Owner
+                Atelier
               </button>
             ) : (
-              <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-10">
                 <button 
                   onClick={() => setView('ADMIN')}
-                  className={`text-sm tracking-widest uppercase transition-colors ${
-                    currentView === 'ADMIN' ? 'text-black font-semibold' : 'text-gray-400 hover:text-black'
+                  className={`text-[10px] tracking-[0.4em] uppercase transition-all duration-500 ${
+                    currentView === 'ADMIN' ? 'text-black font-bold' : 'text-neutral-300 hover:text-black'
                   }`}
                 >
                   Dashboard
@@ -57,9 +58,9 @@ const Navbar: React.FC<NavbarProps> = ({ currentView, setView, isAdmin, logout }
                     logout();
                     setView('GALLERY');
                   }}
-                  className="text-xs text-red-400 hover:text-red-600 uppercase tracking-widest"
+                  className="text-[9px] text-red-300 hover:text-red-500 uppercase tracking-[0.3em] font-medium transition-colors"
                 >
-                  Logout
+                  Sign Out
                 </button>
               </div>
             )}
