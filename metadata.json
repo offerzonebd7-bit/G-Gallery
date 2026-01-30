@@ -1,0 +1,7 @@
+{
+  "name": "Graphico Global Premium Catalog",
+  "description": "A high-end, minimalist wallpaper catalog for premium mobile designs, featuring an admin panel, AI-powered descriptions, and WhatsApp ordering.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
